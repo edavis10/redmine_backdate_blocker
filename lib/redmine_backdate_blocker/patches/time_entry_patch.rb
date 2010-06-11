@@ -31,6 +31,10 @@ module RedmineBackdateBlocker
             errors.add(:spent_on, l(:backdate_blocker_text_must_be_within_days, :days => backdated_days))
           end
         end
+
+        def allowed_to_backdate?
+          self.class.backdate_blocker_days && User.current.allowed_to?(:backdate_time, project)
+        end
       end
     end
   end

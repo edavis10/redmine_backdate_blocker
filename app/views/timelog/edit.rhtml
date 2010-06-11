@@ -9,7 +9,7 @@
 <p><%= f.text_field :spent_on, :size => 10, :required => true %><%= calendar_for('time_entry_spent_on') %>
 <%= content_tag(:span,
                 l(:backdate_blocker_text_must_be_within_days, :days => TimeEntry.backdate_blocker_days),
-                :class => 'backdate-blocker-note') if TimeEntry.backdate_blocker_days %>
+                :class => 'backdate-blocker-note') unless @time_entry.allowed_to_backdate? %>
 </p>
 <p><%= f.text_field :hours, :size => 6, :required => true %></p>
 <p><%= f.text_field :comments, :size => 100 %></p>
