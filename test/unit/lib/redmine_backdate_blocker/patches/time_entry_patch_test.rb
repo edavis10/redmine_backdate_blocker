@@ -61,6 +61,12 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
         assert !time_entry.save
         assert_equal "must be within 3 days", time_entry.errors.on(:spent_on)
       end
+
+      should "allow logging on the same day, even if the current time makes it appear off" do
+        time_entry = TimeEntry.new(@valid_attributes.merge(:spent_on => 3.days.ago - 10.seconds))
+
+        assert time_entry.save
+      end
     end
   end
 end
