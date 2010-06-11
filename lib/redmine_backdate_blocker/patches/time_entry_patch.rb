@@ -14,14 +14,18 @@ module RedmineBackdateBlocker
 
       module ClassMethods
         def backdate_blocker_days
-          return nil if Setting.plugin_redmine_backdate_blocker['days'].blank?
+          return nil unless backdated_days_configured?
           Setting.plugin_redmine_backdate_blocker['days'].to_i
+        end
+
+        def backdated_days_configured?
+          Setting.plugin_redmine_backdate_blocker['days'].present?
         end
       end
 
       module InstanceMethods
         def check_for_backdated_spent_on
-          return if Setting.plugin_redmine_backdate_blocker['days'].blank?
+          return unless self.class.backdated_days_configured?
           return if self.class.backdate_blocker_days.days.ago.beginning_of_day <= spent_on.beginning_of_day
 
           unless allowed_to_backdate?
