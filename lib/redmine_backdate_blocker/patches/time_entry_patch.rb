@@ -26,7 +26,7 @@ module RedmineBackdateBlocker
       module InstanceMethods
         def check_for_backdated_spent_on
           return unless self.class.backdated_days_configured?
-          return if self.class.backdate_blocker_days.days.ago.beginning_of_day <= spent_on.beginning_of_day
+          return unless backdated?
 
           unless allowed_to_backdate?
             errors.add(:spent_on, l(:backdate_blocker_text_must_be_within_days, :days => self.class.backdate_blocker_days))
@@ -35,6 +35,10 @@ module RedmineBackdateBlocker
 
         def allowed_to_backdate?
           self.class.backdate_blocker_days && User.current.allowed_to?(:backdate_time, project)
+        end
+
+        def backdated?
+          spent_on.beginning_of_day < self.class.backdate_blocker_days.days.ago.beginning_of_day
         end
       end
     end
