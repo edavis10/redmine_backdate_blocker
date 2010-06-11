@@ -1,0 +1,6 @@
+<fieldset>
+  <p>
+    <%= content_tag(:label, l(:backdate_blocker_label_days)) %>
+    <%= text_field_tag("settings[days]", @settings['days']) %> <%= l(:label_day_plural) %>
+  </p>
+</fieldset>
