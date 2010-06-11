@@ -14,4 +14,8 @@ Redmine::Plugin.register :redmine_backdate_blocker do
            :default => {
              'days' => '3'
            })
+
+  project_module :time_tracking do
+    permission :backdate_time, {}
+  end
 end
