@@ -38,6 +38,7 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
     context "for an administrator" do
       should "allow creating past the backdated number of days" do
         @user.update_attribute(:admin, true)
+        assert @member.destroy # Non-member but admin
         time_entry = TimeEntry.new(@valid_attributes.merge(:spent_on => 1.year.ago))
         assert time_entry.save
       end
