@@ -13,6 +13,10 @@ module RedmineBackdateBlocker
       end
 
       module ClassMethods
+        def backdate_blocker_days
+          return nil if Setting.plugin_redmine_backdate_blocker['days'].blank?
+          Setting.plugin_redmine_backdate_blocker['days'].to_i
+        end
       end
 
       module InstanceMethods
