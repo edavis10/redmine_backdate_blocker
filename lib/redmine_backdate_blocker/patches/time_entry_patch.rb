@@ -8,7 +8,7 @@ module RedmineBackdateBlocker
         base.class_eval do
           unloadable
 
-          validate :backdated_time
+          validate :check_for_backdated_spent_on
         end
       end
 
@@ -16,7 +16,7 @@ module RedmineBackdateBlocker
       end
 
       module InstanceMethods
-        def backdated_time
+        def check_for_backdated_spent_on
           return if Setting.plugin_redmine_backdate_blocker['days'].blank?
 
           backdated_days = Setting.plugin_redmine_backdate_blocker['days'].to_i
