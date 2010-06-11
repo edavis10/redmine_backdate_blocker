@@ -19,3 +19,10 @@ Redmine::Plugin.register :redmine_backdate_blocker do
     permission :backdate_time, {}
   end
 end
+
+require 'dispatcher'
+Dispatcher.to_prepare :redmine_backdate_blocker do
+
+  require_dependency 'time_entry'
+  TimeEntry.send(:include, RedmineBackdateBlocker::Patches::TimeEntryPatch)
+end
