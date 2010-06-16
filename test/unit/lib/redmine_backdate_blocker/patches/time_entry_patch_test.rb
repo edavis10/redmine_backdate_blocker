@@ -35,6 +35,28 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
       assert time_entry.save
     end
 
+    should "allow deleting a time entry that's in the future" do
+      @time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => 1.day.from_now))
+
+      assert !@time_entry.new_record?
+      assert @time_entry.destroy
+    end
+    
+    should "allow deleting a time entry that was spent today" do
+      @time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => Date.today))
+
+      assert !@time_entry.new_record?
+      assert @time_entry.destroy
+    end
+    
+    should "allow deleting a time entry that was spent up to the number of backdated days" do
+      spent_on = Setting.plugin_redmine_backdate_blocker['days'].to_i.days.ago
+      @time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => spent_on))
+
+      assert !@time_entry.new_record?
+      assert @time_entry.destroy
+    end
+
     context "for an administrator" do
       should "allow creating past the backdated number of days" do
         @user.update_attribute(:admin, true)
@@ -42,6 +64,15 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
         time_entry = TimeEntry.new(@valid_attributes.merge(:spent_on => 1.year.ago))
         assert time_entry.save
       end
+
+      should "allow deleting a time entry past the backdated number of days" do
+        @user.update_attribute(:admin, true)
+        assert @member.destroy # Non-member but admin
+        time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => 1.year.ago))
+        assert !time_entry.new_record?
+        assert time_entry.destroy
+      end
+
     end
 
     context "for an authorized user" do
@@ -51,7 +82,15 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
         time_entry = TimeEntry.new(@valid_attributes.merge(:spent_on => 1.year.ago))
         assert time_entry.save
       end
-      
+
+      should "allow deleting a time entry past the backdated number of days" do
+        @role.update_attribute(:permissions, [:log_time, :view_time_entries, :edit_time_entries, :backdate_time])
+        
+        time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => 1.year.ago))
+        assert !time_entry.new_record?
+        assert time_entry.destroy
+      end
+
     end
 
     context "for an unauthorized user" do
@@ -60,6 +99,15 @@ class RedmineBackdateBlocker::Patches::TimeEntryTest < ActionController::TestCas
 
         assert !time_entry.save
         assert_match /Time may not be clocked prior to /, time_entry.errors.on_base
+      end
+
+      should "not allow deleting a time entry past the backdated number of days" do
+        @user.update_attribute(:admin, true)
+        time_entry = TimeEntry.generate!(@valid_attributes.merge(:spent_on => 1.year.ago))
+        assert !time_entry.new_record?
+        @user.update_attribute(:admin, false)
+
+        assert !time_entry.destroy
       end
 
       should "allow logging on the same day, even if the current time makes it appear off" do

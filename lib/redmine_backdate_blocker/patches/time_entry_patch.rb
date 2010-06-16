@@ -9,6 +9,7 @@ module RedmineBackdateBlocker
           unloadable
 
           validate :check_for_backdated_spent_on
+          before_destroy :check_for_backdated_spent_on
         end
       end
 
@@ -30,12 +31,14 @@ module RedmineBackdateBlocker
 
       module InstanceMethods
         def check_for_backdated_spent_on
-          return unless self.class.backdated_days_configured?
-          return unless backdated?
+          return true unless self.class.backdated_days_configured?
+          return true unless backdated?
 
           unless allowed_to_backdate?
             errors.add_to_base(l(:backdate_blocker_text_must_be_prior, :date => format_date(self.class.backdate_blocker_days_ago)))
           end
+
+          errors.length == 0
         end
 
         def allowed_to_backdate?
