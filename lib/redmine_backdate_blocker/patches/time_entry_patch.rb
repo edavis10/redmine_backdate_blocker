@@ -18,6 +18,11 @@ module RedmineBackdateBlocker
           Setting.plugin_redmine_backdate_blocker['days'].to_i
         end
 
+        def backdate_blocker_days_ago
+          return nil if backdate_blocker_days.nil?
+          backdate_blocker_days.days.ago
+        end
+
         def backdated_days_configured?
           Setting.plugin_redmine_backdate_blocker['days'].present?
         end
@@ -29,7 +34,7 @@ module RedmineBackdateBlocker
           return unless backdated?
 
           unless allowed_to_backdate?
-            errors.add(:spent_on, l(:backdate_blocker_text_must_be_within_days, :days => self.class.backdate_blocker_days))
+            errors.add_to_base(l(:backdate_blocker_text_must_be_prior, :date => format_date(self.class.backdate_blocker_days_ago)))
           end
         end
 
