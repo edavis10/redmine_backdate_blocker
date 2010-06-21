@@ -1,3 +1,4 @@
 en:
   backdate_blocker_label_days: "Allow backdating time entries in the past"
-  backdate_blocker_text_must_be_prior: "Time may not be clocked prior to {{date}}"
+  backdate_blocker_label_extra_message: "Extra message on time entry form (HTML allowed)"
+  backdate_blocker_text_must_be_prior: "Time may not be clocked prior to {{date}}. {{extra_message}}"

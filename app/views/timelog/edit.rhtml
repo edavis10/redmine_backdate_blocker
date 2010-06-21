@@ -8,7 +8,7 @@
 <p><%= f.text_field :issue_id, :size => 6 %> <em><%= h("#{@time_entry.issue.tracker.name} ##{@time_entry.issue.id}: #{@time_entry.issue.subject}") if @time_entry.issue %></em></p>
 <p><%= f.text_field :spent_on, :size => 10, :required => true %><%= calendar_for('time_entry_spent_on') %>
 <%= content_tag(:span,
-                l(:backdate_blocker_text_must_be_prior, :date => format_date(TimeEntry.backdate_blocker_days_ago)),
+                l(:backdate_blocker_text_must_be_prior, :date => format_date(TimeEntry.backdate_blocker_days_ago), :extra_message => Setting.plugin_redmine_backdate_blocker['extra_message']),
                 :class => 'backdate-blocker-note') unless @time_entry.allowed_to_backdate? %>
 </p>
 <p><%= f.text_field :hours, :size => 6, :required => true %></p>

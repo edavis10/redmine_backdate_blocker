@@ -12,7 +12,8 @@ Redmine::Plugin.register :redmine_backdate_blocker do
 
   settings(:partial => 'settings/backdate_blocker_settings',
            :default => {
-             'days' => '3'
+             'days' => '3',
+             'extra_message' => 'Please contact your <strong>Project Manager</strong> for help'
            })
 
   project_module :time_tracking do

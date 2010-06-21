@@ -35,7 +35,7 @@ module RedmineBackdateBlocker
           return true unless backdated?
 
           unless allowed_to_backdate?
-            errors.add_to_base(l(:backdate_blocker_text_must_be_prior, :date => format_date(self.class.backdate_blocker_days_ago)))
+            errors.add_to_base(l(:backdate_blocker_text_must_be_prior, :date => format_date(self.class.backdate_blocker_days_ago), :extra_message => ''))
           end
 
           errors.length == 0

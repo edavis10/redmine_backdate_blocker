@@ -22,10 +22,12 @@ class ConfiguringTest < ActionController::IntegrationTest
     visit_plugin_configuration
 
     fill_in "settings_days", :with => '14'
+    fill_in "settings_extra_message", :with => 'Please email your <a href="mailto:pm@example.com">project manager</a> if you need help'
     click_button 'Apply'
 
     assert_equal "http://www.example.com/settings/plugin/redmine_backdate_blocker", current_url
     assert_select '#settings_days[value=?]', /14/
+    assert_select '#settings_extra_message', :text => 'Please email your &lt;a href=&quot;mailto:pm@example.com&quot;&gt;project manager&lt;/a&gt; if you need help'
 
   end
   

@@ -3,4 +3,9 @@
     <%= content_tag(:label, l(:backdate_blocker_label_days)) %>
     <%= text_field_tag("settings[days]", @settings['days']) %> <%= l(:label_day_plural) %>
   </p>
+
+  <p>
+    <%= content_tag(:label, l(:backdate_blocker_label_extra_message)) %>
+    <%= text_area_tag("settings[extra_message]", @settings['extra_message'], :cols => 80, :rows => 10) %>
+  </p>
 </fieldset>
